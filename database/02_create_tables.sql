@@ -4,7 +4,7 @@
 -- File: 02_create_tables.sql
 -- ============================================================================
 
-USE nourishnet;
+USE nourishnet_demo;
 
 -- Disable foreign key checks during creation
 SET FOREIGN_KEY_CHECKS = 0;

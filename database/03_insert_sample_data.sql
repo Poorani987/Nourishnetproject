@@ -8,7 +8,7 @@
 -- BCrypt Hash: $2a$10$g4v4UIL6Tfzxx4SJTY4Jz.Q3bE7aIPvwp7dQ3tqsXYqFXYa4I3h4m
 -- ============================================================================
 
-USE nourishnet;
+USE nourishnet_demo;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
