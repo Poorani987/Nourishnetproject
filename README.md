@@ -186,7 +186,7 @@ mvn test
 mvn spring-boot:run
 ```
 
-The backend server starts on **`http://localhost:8080`**.
+The backend server starts on **`http://localhost:8081`** (Vite automatically proxies `/api` from `5173`).
 
 ---
 

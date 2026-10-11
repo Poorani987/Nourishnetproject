@@ -30,6 +30,7 @@ dist-ssr/
 *.sln
 *.sw?
 
-# OS
+# OS & Logs
 .DS_Store
 Thumbs.db
+*.log

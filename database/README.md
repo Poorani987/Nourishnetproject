@@ -103,7 +103,7 @@ Navigate to `backend/` and run:
 ```powershell
 mvn spring-boot:run
 ```
-Spring Boot will start on `http://localhost:8080` with Hibernate schema validation confirming your MySQL database tables.
+Spring Boot will start on `http://localhost:8081` with Hibernate schema validation confirming your MySQL database tables.
 
 ### Step 13: Start the Frontend
 In another terminal, navigate to `frontend/` and run:
