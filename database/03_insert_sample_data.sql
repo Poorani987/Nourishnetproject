@@ -158,22 +158,23 @@ INSERT INTO road_nodes (id, node_code, node_name, area_name, latitude, longitude
 (10, 'NODE_GOBI_BS', 'Gobichettipalayam Bus Stand', 'Gobichettipalayam', 11.4540, 77.4360),
 (11, 'NODE_ISOLATED_TEST', 'Isolated Research Depot (Unreachable)', 'Outer Boundary', 11.5500, 77.8500);
 
--- Road connections (Edges) with distances in km
+-- Road connections (Edges) with Google Maps verified driving distances in km
 INSERT INTO road_edges (id, source_node_id, target_node_id, road_name, distance_km, is_bidirectional) VALUES
-(1, 1, 2, 'EVN Road', 1.80, TRUE),
-(2, 2, 3, 'Perundurai Road (Town Section)', 5.20, TRUE),
-(3, 3, 4, 'SH96 Perundurai Highway', 5.80, TRUE),
-(4, 4, 7, 'NH544 Expressway Southern Wing', 8.50, TRUE),
-(5, 7, 8, 'SIPCOT Industrial Main Road', 2.10, TRUE),
-(6, 2, 5, 'Erode-Bhavani Road via BP Agraharam', 8.40, TRUE),
-(7, 5, 6, 'NH544 Bhavani River Bridge Link', 5.10, TRUE),
-(8, 5, 4, 'Chithode-Nasiyanur Bypass Link', 7.30, TRUE),
-(9, 5, 9, 'Chithode-Kavindapadi State Highway', 12.50, TRUE),
-(10, 6, 9, 'Bhavani-Kavindapadi Road', 14.10, TRUE),
-(11, 9, 10, 'Kavindapadi-Gobi State Highway', 13.80, TRUE),
-(12, 7, 10, 'Perundurai-Gobi Direct SH', 23.40, TRUE),
-(13, 1, 3, 'Brough Road - Thindal Direct', 4.90, TRUE),
-(14, 4, 9, 'Nasiyanur-Kavindapadi Rural Road', 11.20, TRUE);
+(1, 1, 2, 'EVN Road / Gandhiji Road', 2.80, TRUE),
+(2, 2, 3, 'Perundurai Road (Town Section)', 6.50, TRUE),
+(3, 3, 4, 'Thindal-Nasiyanur Link Road', 5.60, TRUE),
+(4, 4, 7, 'NH544 Expressway Southern Wing', 10.50, TRUE),
+(5, 7, 8, 'SIPCOT Industrial Main Road', 6.80, TRUE),
+(6, 2, 5, 'Erode-Bhavani Road via BP Agraharam', 10.50, TRUE),
+(7, 5, 6, 'NH544 Bhavani River Bridge Link', 6.50, TRUE),
+(8, 5, 4, 'Chithode-Nasiyanur Bypass Link', 7.50, TRUE),
+(9, 5, 9, 'Chithode-Kavindapadi State Highway', 12.80, TRUE),
+(10, 6, 9, 'Bhavani-Kavindapadi Road', 15.50, TRUE),
+(11, 9, 10, 'Kavindapadi-Gobi State Highway', 14.80, TRUE),
+(12, 7, 10, 'Perundurai-Thingalur-Gobi Highway', 31.50, TRUE),
+(13, 1, 3, 'Brough Road - Perundurai Road Direct', 7.00, TRUE),
+(14, 4, 9, 'Nasiyanur-Kavindapadi Rural Arterial Road', 18.50, TRUE),
+(15, 3, 7, 'SH96 Perundurai Road Direct', 11.80, TRUE);
 
 -- ----------------------------------------------------------------------------
 -- 7. FOOD DONATIONS (22 records)
