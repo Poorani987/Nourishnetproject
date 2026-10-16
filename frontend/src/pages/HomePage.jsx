@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { donationsApi, impactApi } from '../api/client';
-import { FoodDonation, ImpactSummary } from '../types';
 import { FoodCard } from '../components/FoodCard';
 import { StatCard } from '../components/StatCard';
 import { 
@@ -10,21 +9,18 @@ import {
   Utensils, 
   Truck, 
   MapPin, 
-  ShieldCheck, 
   ArrowRight, 
   Sparkles, 
-  Users, 
   Leaf, 
-  CheckCircle2,
-  Clock,
+  CheckCircle2, 
   Navigation
 } from 'lucide-react';
 
-export const HomePage: React.FC = () => {
-  const { isAuthenticated, user, getDashboardPath } = useAuth();
+export const HomePage = () => {
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
-  const [featuredDonations, setFeaturedDonations] = useState<FoodDonation[]>([]);
-  const [impact, setImpact] = useState<ImpactSummary | null>(null);
+  const [featuredDonations, setFeaturedDonations] = useState([]);
+  const [impact, setImpact] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,7 +36,7 @@ export const HomePage: React.FC = () => {
       ]);
 
       if (donationsRes.status === 'fulfilled') {
-        setFeaturedDonations(donationsRes.value.slice(0, 3));
+        setFeaturedDonations((donationsRes.value || []).slice(0, 3));
       }
       if (impactRes.status === 'fulfilled') {
         setImpact(impactRes.value);
@@ -52,7 +48,7 @@ export const HomePage: React.FC = () => {
     }
   };
 
-  const handleFoodRequest = (donation: FoodDonation) => {
+  const handleFoodRequest = (donation) => {
     if (!isAuthenticated) {
       navigate('/login');
     } else if (user?.role === 'RECIPIENT') {
@@ -134,7 +130,6 @@ export const HomePage: React.FC = () => {
               <div className="relative mx-auto max-w-md lg:max-w-none">
                 <div className="bg-white rounded-3xl p-8 shadow-xl border border-lightBorder relative space-y-6">
                   
-                  {/* Decorative badge */}
                   <div className="flex items-center justify-between pb-4 border-b border-lightBorder">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-primaryGreen text-white flex items-center justify-center">
@@ -150,7 +145,6 @@ export const HomePage: React.FC = () => {
                     </span>
                   </div>
 
-                  {/* Flow Steps Preview */}
                   <div className="space-y-4 text-sm">
                     <div className="flex items-start gap-3 p-3 rounded-xl bg-cream-50 border border-lightBorder">
                       <div className="w-7 h-7 rounded-lg bg-softGreen text-forest font-bold flex items-center justify-center shrink-0 text-xs">
@@ -158,7 +152,7 @@ export const HomePage: React.FC = () => {
                       </div>
                       <div>
                         <p className="font-semibold text-darkText">Surplus Food Donated</p>
-                        <p className="text-xs text-mutedText">Restaurateurs & messes list verified edible meals.</p>
+                        <p className="text-xs text-mutedText">Restaurateurs & messes list verified edible meals in seconds.</p>
                       </div>
                     </div>
 
@@ -183,7 +177,6 @@ export const HomePage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Quote Banner */}
                   <div className="p-4 rounded-2xl bg-forest text-cream-50 text-xs leading-relaxed">
                     <p className="italic">
                       "Targeting zero edible food waste across Erode, Perundurai, Bhavani, Chithode, and Gobichettipalayam."
@@ -239,78 +232,6 @@ export const HomePage: React.FC = () => {
             iconBgColor="bg-softGreen-light"
             iconColor="text-forest"
           />
-        </div>
-      </section>
-
-      {/* HOW IT WORKS (5 STEPS) */}
-      <section className="bg-white py-16 border-y border-lightBorder">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="text-xs font-semibold uppercase tracking-widest text-primaryGreen">End-to-End Workflow</span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-forest mt-1.5">How NourishNet Works</h2>
-            <p className="text-mutedText text-sm mt-3">
-              An autonomous, 5-step redistribution pipeline ensuring food safety and swift delivery.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 text-left relative">
-            
-            {/* Step 1 */}
-            <div className="card-warm p-6 space-y-3 relative">
-              <span className="w-8 h-8 rounded-full bg-forest text-white font-bold text-sm flex items-center justify-center">
-                1
-              </span>
-              <h3 className="font-serif text-lg font-bold text-forest">Donor Lists Surplus</h3>
-              <p className="text-xs text-mutedText leading-relaxed">
-                Hotels, messes, and event caterers register and list quantity, food type, storage, and consume-before deadlines.
-              </p>
-            </div>
-
-            {/* Step 2 */}
-            <div className="card-warm p-6 space-y-3 relative">
-              <span className="w-8 h-8 rounded-full bg-forest text-white font-bold text-sm flex items-center justify-center">
-                2
-              </span>
-              <h3 className="font-serif text-lg font-bold text-forest">Recipient Discovers</h3>
-              <p className="text-xs text-mutedText leading-relaxed">
-                Orphanages and shelters search matching donations and request partial or full portion quantities.
-              </p>
-            </div>
-
-            {/* Step 3 */}
-            <div className="card-warm p-6 space-y-3 relative">
-              <span className="w-8 h-8 rounded-full bg-forest text-white font-bold text-sm flex items-center justify-center">
-                3
-              </span>
-              <h3 className="font-serif text-lg font-bold text-forest">15km Policy Applied</h3>
-              <p className="text-xs text-mutedText leading-relaxed">
-                The backend evaluates road distance: ≤15 km donor coordinates; &gt;15 km recipient arranges.
-              </p>
-            </div>
-
-            {/* Step 4 */}
-            <div className="card-warm p-6 space-y-3 relative">
-              <span className="w-8 h-8 rounded-full bg-forest text-white font-bold text-sm flex items-center justify-center">
-                4
-              </span>
-              <h3 className="font-serif text-lg font-bold text-forest">Volunteer Acceptance</h3>
-              <p className="text-xs text-mutedText leading-relaxed">
-                Available unpaid volunteers accept eligible jobs matching their registered vehicle capacity and radius.
-              </p>
-            </div>
-
-            {/* Step 5 */}
-            <div className="card-warm p-6 space-y-3 relative">
-              <span className="w-8 h-8 rounded-full bg-forest text-white font-bold text-sm flex items-center justify-center">
-                5
-              </span>
-              <h3 className="font-serif text-lg font-bold text-forest">OTP Verified Handover</h3>
-              <p className="text-xs text-mutedText leading-relaxed">
-                Recipient shares a short-lived random 6-digit OTP code to complete handover and award volunteer points.
-              </p>
-            </div>
-
-          </div>
         </div>
       </section>
 
@@ -397,9 +318,6 @@ export const HomePage: React.FC = () => {
                 <p className="font-bold text-white">Distance &gt; 15 km</p>
                 <p className="text-cream-200/70 mt-0.5">Recipient coordinates pickup or requests an inter-city volunteer vehicle.</p>
               </div>
-              <p className="text-[11px] text-cream-200/50 italic text-center pt-1">
-                Illustrative sample road network — not live navigation.
-              </p>
             </div>
 
           </div>
@@ -414,7 +332,7 @@ export const HomePage: React.FC = () => {
           </div>
           <h2 className="font-serif text-3xl font-bold text-forest">Have a Vehicle? Drive for Good.</h2>
           <p className="text-mutedText text-sm sm:text-base mt-2 max-w-xl mx-auto leading-relaxed">
-            Join as an unpaid vehicle volunteer. Whether you operate a bicycle, bike, auto, car, or van, help bridge the last mile between surplus food and hungry community members.
+            Join as a volunteer driver. Whether you ride a motorcycle, auto, car, or van, help bridge the last mile between surplus food and hungry community members.
           </p>
           <div className="mt-6 flex justify-center gap-4">
             <Link

@@ -1,18 +1,7 @@
 import React from 'react';
 import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
 
-export interface ToastMessage {
-  id: string;
-  type: 'success' | 'error' | 'info';
-  message: string;
-}
-
-interface ToastProps {
-  toasts: ToastMessage[];
-  onDismiss: (id: string) => void;
-}
-
-export const Toast: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
+export const Toast = ({ toasts = [], onDismiss }) => {
   if (toasts.length === 0) return null;
 
   return (
@@ -35,7 +24,7 @@ export const Toast: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
           <div className="flex-1 text-sm font-medium leading-relaxed">{toast.message}</div>
 
           <button
-            onClick={() => onDismiss(toast.id)}
+            onClick={() => onDismiss && onDismiss(toast.id)}
             className="text-gray-400 hover:text-gray-600 p-0.5 rounded transition-colors"
           >
             <X className="w-4 h-4" />

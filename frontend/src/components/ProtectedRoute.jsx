@@ -1,14 +1,8 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Role } from '../types';
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-  allowedRoles?: Role[];
-}
-
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
+export const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, isAuthenticated, getDashboardPath } = useAuth();
   const location = useLocation();
 
@@ -21,5 +15,5 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowe
     return <Navigate to={getDashboardPath(user.role)} replace />;
   }
 
-  return <>{children}</>;
+  return children;
 };

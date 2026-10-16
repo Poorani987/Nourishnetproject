@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { HeartHandshake, LogIn, Lock, Mail, AlertCircle, Sparkles } from 'lucide-react';
 
-export const LoginPage: React.FC = () => {
+export const LoginPage = () => {
   const { login, getDashboardPath } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -11,24 +11,24 @@ export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
       setError(null);
       const user = await login({ email, password });
-      const destination = (location.state as any)?.from?.pathname || getDashboardPath(user.role);
+      const destination = location.state?.from?.pathname || getDashboardPath(user.role);
       navigate(destination, { replace: true });
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message || 'Invalid email or password');
     } finally {
       setLoading(false);
     }
   };
 
-  const fillDemoAccount = (demoEmail: string) => {
+  const fillDemoAccount = (demoEmail) => {
     setEmail(demoEmail);
     setPassword('password123');
     setError(null);
@@ -45,7 +45,7 @@ export const LoginPage: React.FC = () => {
           </div>
           <h2 className="font-serif text-3xl font-bold text-forest">Welcome Back</h2>
           <p className="text-sm text-mutedText">
-            Sign in to access your role-specific NourishNet dashboard
+            Sign in to access your NourishNet dashboard
           </p>
         </div>
 
@@ -53,13 +53,13 @@ export const LoginPage: React.FC = () => {
         <div className="card-warm p-4 bg-cream-50 space-y-2 text-left">
           <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primaryGreen">
             <Sparkles className="w-3.5 h-3.5 text-orangeAccent" />
-            <span>Academic Demonstration Accounts:</span>
+            <span>Quick Demo Sign-In:</span>
           </div>
           <div className="grid grid-cols-3 gap-2 text-xs">
             <button
               type="button"
               onClick={() => fillDemoAccount('donor.annapoorna@nourishnet.org')}
-              className="px-2.5 py-1.5 rounded-lg border border-lightBorder bg-white hover:bg-softGreen/30 font-medium transition-colors truncate"
+              className="px-2.5 py-2 rounded-lg border border-lightBorder bg-white hover:bg-softGreen/40 font-medium transition-colors text-center"
               title="Murugan P (Annapoorna Bhavan)"
             >
               Donor Demo
@@ -67,7 +67,7 @@ export const LoginPage: React.FC = () => {
             <button
               type="button"
               onClick={() => fillDemoAccount('recipient.anbu@nourishnet.org')}
-              className="px-2.5 py-1.5 rounded-lg border border-lightBorder bg-white hover:bg-softGreen/30 font-medium transition-colors truncate"
+              className="px-2.5 py-2 rounded-lg border border-lightBorder bg-white hover:bg-softGreen/40 font-medium transition-colors text-center"
               title="Sister Rosy (Anbu Karangal)"
             >
               Recipient Demo
@@ -75,7 +75,7 @@ export const LoginPage: React.FC = () => {
             <button
               type="button"
               onClick={() => fillDemoAccount('volunteer.ramesh@nourishnet.org')}
-              className="px-2.5 py-1.5 rounded-lg border border-lightBorder bg-white hover:bg-softGreen/30 font-medium transition-colors truncate"
+              className="px-2.5 py-2 rounded-lg border border-lightBorder bg-white hover:bg-softGreen/40 font-medium transition-colors text-center"
               title="Ramesh Kumar (Motorcycle)"
             >
               Volunteer Demo
@@ -133,14 +133,14 @@ export const LoginPage: React.FC = () => {
               className="w-full py-3 px-4 rounded-xl bg-forest hover:bg-primaryGreen text-white font-semibold text-sm transition-all shadow-sm hover:shadow flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <LogIn className="w-4 h-4" />
-              <span>{loading ? 'Authenticating...' : 'Sign In'}</span>
+              <span>{loading ? 'Signing In...' : 'Sign In'}</span>
             </button>
           </form>
 
           <div className="mt-6 pt-6 border-t border-lightBorder text-center text-xs text-mutedText">
             Don't have an account yet?{' '}
             <Link to="/register" className="font-semibold text-primaryGreen hover:underline">
-              Create an account
+              Create a simple account
             </Link>
           </div>
         </div>

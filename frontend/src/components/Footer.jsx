@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { HeartHandshake, ShieldCheck, MapPin, Truck, Leaf } from 'lucide-react';
 
-export const Footer: React.FC = () => {
+export const Footer = () => {
   return (
     <footer className="bg-forest text-cream-50 pt-16 pb-12 border-t border-forest-dark">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

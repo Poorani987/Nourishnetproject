@@ -1,16 +1,6 @@
 import React from 'react';
-import { LucideIcon } from 'lucide-react';
 
-interface StatCardProps {
-  title: string;
-  value: string | number;
-  subtitle?: string;
-  icon: LucideIcon;
-  iconBgColor?: string;
-  iconColor?: string;
-}
-
-export const StatCard: React.FC<StatCardProps> = ({
+export const StatCard = ({
   title,
   value,
   subtitle,
@@ -28,7 +18,7 @@ export const StatCard: React.FC<StatCardProps> = ({
         )}
       </div>
       <div className={`w-12 h-12 rounded-2xl ${iconBgColor} flex items-center justify-center shrink-0`}>
-        <Icon className={`w-6 h-6 ${iconColor}`} />
+        {Icon && <Icon className={`w-6 h-6 ${iconColor}`} />}
       </div>
     </div>
   );

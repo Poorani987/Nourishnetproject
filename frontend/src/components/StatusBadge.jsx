@@ -1,12 +1,8 @@
 import React from 'react';
 
-interface StatusBadgeProps {
-  status: string;
-}
-
-export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
+export const StatusBadge = ({ status }) => {
   let colorClasses = 'bg-gray-100 text-gray-800 border-gray-200';
-  let label = status.replace(/_/g, ' ');
+  let label = (status || '').replace(/_/g, ' ');
 
   switch (status) {
     case 'AVAILABLE':
@@ -39,6 +35,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
       break;
     case 'CANCELLED':
       colorClasses = 'bg-stone-100 text-stone-700 border-stone-200';
+      break;
+    default:
       break;
   }
 

@@ -1,24 +1,13 @@
 import React from 'react';
-import { FoodDonation } from '../types';
 import { StatusBadge } from './StatusBadge';
 import { 
   Clock, 
   MapPin, 
   Building2, 
-  AlertTriangle, 
-  Thermometer, 
-  Utensils, 
-  CheckCircle,
-  Truck
+  Truck 
 } from 'lucide-react';
 
-interface FoodCardProps {
-  donation: FoodDonation;
-  onRequestClick?: (donation: FoodDonation) => void;
-  showRequestButton?: boolean;
-}
-
-export const FoodCard: React.FC<FoodCardProps> = ({
+export const FoodCard = ({
   donation,
   onRequestClick,
   showRequestButton = true,
@@ -26,7 +15,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({
   const isExpiringSoon = (donation.minutesRemaining ?? 999) < 180 && (donation.minutesRemaining ?? 0) > 0;
   const isExpired = (donation.minutesRemaining ?? 0) <= 0 || donation.status === 'EXPIRED';
 
-  const formatRemainingTime = (minutes?: number) => {
+  const formatRemainingTime = (minutes) => {
     if (minutes === undefined || minutes <= 0) return 'Expired';
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
@@ -55,12 +44,14 @@ export const FoodCard: React.FC<FoodCardProps> = ({
             </div>
 
             <span className="text-xs font-semibold tracking-wider uppercase text-mutedText">
-              {donation.foodCategory.replace(/_/g, ' ')}
+              {(donation.foodCategory || 'MEALS').replace(/_/g, ' ')}
             </span>
 
-            <span className="text-[11px] px-2 py-0.5 rounded bg-cream-200 text-darkText font-medium">
-              {donation.stateType}
-            </span>
+            {donation.stateType && (
+              <span className="text-[11px] px-2 py-0.5 rounded bg-cream-200 text-darkText font-medium">
+                {donation.stateType}
+              </span>
+            )}
           </div>
 
           <StatusBadge status={donation.status} />
@@ -84,7 +75,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({
               Available
             </span>
             <span className="font-serif text-lg font-bold text-forest">
-              {donation.remainingQuantity} <span className="text-xs font-sans font-normal text-mutedText">{donation.quantityUnit}</span>
+              {donation.remainingQuantity} <span className="text-xs font-sans font-normal text-mutedText">{donation.quantityUnit || 'portions'}</span>
             </span>
             <span className="text-[10px] text-mutedText/80 block">
               of {donation.totalQuantity} total
@@ -93,7 +84,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({
 
           <div>
             <span className="text-[11px] uppercase tracking-wider text-mutedText font-semibold block">
-              Consume Before
+              Fresh Until
             </span>
             <div className="flex items-center gap-1 mt-0.5">
               <Clock className={`w-3.5 h-3.5 ${isExpiringSoon ? 'text-orangeAccent' : isExpired ? 'text-red-600' : 'text-primaryGreen'}`} />
@@ -101,28 +92,21 @@ export const FoodCard: React.FC<FoodCardProps> = ({
                 {formatRemainingTime(donation.minutesRemaining)}
               </span>
             </div>
-            <span className="text-[10px] text-mutedText/80 block mt-0.5">
-              {new Date(donation.consumeBefore).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </span>
+            {donation.consumeBefore && (
+              <span className="text-[10px] text-mutedText/80 block mt-0.5">
+                Expiry: {new Date(donation.consumeBefore).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            )}
+            {donation.preparationTime && (
+              <span className="text-[10px] text-mutedText/70 block">
+                Cooked: {new Date(donation.preparationTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            )}
           </div>
         </div>
 
-        {/* Details: Storage & Allergens */}
+        {/* Pickup Location */}
         <div className="space-y-1.5 text-xs text-mutedText mb-4">
-          {donation.storageRequirements && (
-            <div className="flex items-center gap-1.5">
-              <Thermometer className="w-3.5 h-3.5 text-forest/70 shrink-0" />
-              <span>Storage: {donation.storageRequirements.replace(/_/g, ' ')}</span>
-            </div>
-          )}
-
-          {donation.allergenInformation && (
-            <div className="flex items-center gap-1.5 text-amber-800 bg-amber-50 px-2 py-1 rounded-lg">
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-              <span className="truncate">Allergens: {donation.allergenInformation}</span>
-            </div>
-          )}
-
           <div className="flex items-center gap-1.5 truncate">
             <MapPin className="w-3.5 h-3.5 text-forest/70 shrink-0" />
             <span className="truncate">{donation.pickupAddress}</span>
@@ -132,7 +116,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({
         {/* 15km transport rule note */}
         <div className="flex items-center gap-1.5 text-[11px] text-forest/80 bg-softGreen/30 px-2.5 py-1.5 rounded-lg border border-softGreen/50 mb-4">
           <Truck className="w-3.5 h-3.5 text-primaryGreen shrink-0" />
-          <span><strong>15 km Rule:</strong> ≤15 km donor/volunteer, &gt;15 km recipient arranged</span>
+          <span><strong>15 km Rule:</strong> ≤15 km volunteer pickup, &gt;15 km recipient arranged</span>
         </div>
       </div>
 
@@ -140,21 +124,14 @@ export const FoodCard: React.FC<FoodCardProps> = ({
       {showRequestButton && (
         <button
           onClick={() => onRequestClick && onRequestClick(donation)}
-          disabled={isExpired || donation.remainingQuantity <= 0 || donation.status === 'FULLY_ALLOCATED'}
-          className={`w-full py-2.5 px-4 rounded-xl font-semibold text-sm transition-all shadow-sm flex items-center justify-center gap-2 ${
-            isExpired || donation.remainingQuantity <= 0 || donation.status === 'FULLY_ALLOCATED'
+          disabled={isExpired || donation.remainingQuantity <= 0}
+          className={`w-full py-2.5 px-4 rounded-xl font-semibold text-xs transition-all shadow-sm flex items-center justify-center gap-2 ${
+            isExpired || donation.remainingQuantity <= 0
               ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
               : 'bg-forest hover:bg-primaryGreen text-white hover:shadow'
           }`}
         >
-          <Utensils className="w-4 h-4" />
-          <span>
-            {isExpired
-              ? 'Expired'
-              : donation.remainingQuantity <= 0
-              ? 'Fully Claimed'
-              : 'Request Portions'}
-          </span>
+          <span>{donation.remainingQuantity <= 0 ? 'Fully Claimed' : isExpired ? 'Expired' : 'Claim Food Portions'}</span>
         </button>
       )}
     </div>

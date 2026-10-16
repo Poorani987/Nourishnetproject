@@ -2,41 +2,36 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { donationsApi, allocationsApi } from '../api/client';
-import { FoodDonation, FoodType, StateType } from '../types';
 import { FoodCard } from '../components/FoodCard';
 import { Modal } from '../components/Modal';
-import { Toast, ToastMessage } from '../components/Toast';
+import { Toast } from '../components/Toast';
 import { 
   Search, 
-  Filter, 
   Utensils, 
-  AlertCircle, 
   Clock, 
   Truck, 
-  CheckCircle2, 
-  MapPin, 
   ArrowUpDown 
 } from 'lucide-react';
 
-export const AvailableFoodPage: React.FC = () => {
+export const AvailableFoodPage = () => {
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  const [donations, setDonations] = useState<FoodDonation[]>([]);
+  const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('ALL');
-  const [selectedDiet, setSelectedDiet] = useState<'ALL' | FoodType>('ALL');
-  const [selectedState, setSelectedState] = useState<'ALL' | StateType>('ALL');
+  const [selectedDiet, setSelectedDiet] = useState('ALL');
+  const [selectedState, setSelectedState] = useState('ALL');
   const [expiringSoonOnly, setExpiringSoonOnly] = useState(false);
-  const [sortBy, setSortBy] = useState<'URGENCY' | 'QUANTITY' | 'NEWEST'>('URGENCY');
+  const [sortBy, setSortBy] = useState('URGENCY');
 
   // Request modal state
-  const [selectedDonation, setSelectedDonation] = useState<FoodDonation | null>(null);
-  const [requestQuantity, setRequestQuantity] = useState<number>(10);
-  const [estimatedDistance, setEstimatedDistance] = useState<number>(5.5);
+  const [selectedDonation, setSelectedDonation] = useState(null);
+  const [requestQuantity, setRequestQuantity] = useState(10);
+  const [estimatedDistance, setEstimatedDistance] = useState(5.5);
   const [submittingRequest, setSubmittingRequest] = useState(false);
-  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [toasts, setToasts] = useState([]);
 
   useEffect(() => {
     loadDonations();
@@ -46,15 +41,15 @@ export const AvailableFoodPage: React.FC = () => {
     try {
       setLoading(true);
       const data = await donationsApi.getAvailable();
-      setDonations(data);
-    } catch (err: any) {
+      setDonations(data || []);
+    } catch (err) {
       addToast('error', err.message || 'Could not load available food items');
     } finally {
       setLoading(false);
     }
   };
 
-  const addToast = (type: 'success' | 'error' | 'info', message: string) => {
+  const addToast = (type, message) => {
     const id = Date.now().toString();
     setToasts((prev) => [...prev, { id, type, message }]);
     setTimeout(() => {
@@ -62,7 +57,7 @@ export const AvailableFoodPage: React.FC = () => {
     }, 4000);
   };
 
-  const handleOpenRequest = (donation: FoodDonation) => {
+  const handleOpenRequest = (donation) => {
     if (!isAuthenticated) {
       navigate('/login');
       return;
@@ -75,7 +70,7 @@ export const AvailableFoodPage: React.FC = () => {
     setRequestQuantity(Math.min(25, Number(donation.remainingQuantity)));
   };
 
-  const handleSubmitRequest = async (e: React.FormEvent) => {
+  const handleSubmitRequest = async (e) => {
     e.preventDefault();
     if (!selectedDonation) return;
 
@@ -98,8 +93,8 @@ export const AvailableFoodPage: React.FC = () => {
 
       addToast('success', `Successfully claimed ${requestQuantity} portions of ${selectedDonation.foodName}!`);
       setSelectedDonation(null);
-      loadDonations(); // refresh balances
-    } catch (err: any) {
+      loadDonations();
+    } catch (err) {
       addToast('error', err.message || 'Failed to submit allocation request');
     } finally {
       setSubmittingRequest(false);
@@ -110,9 +105,9 @@ export const AvailableFoodPage: React.FC = () => {
   const filteredDonations = donations
     .filter((d) => {
       const matchSearch =
-        d.foodName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        d.donorOrganizationName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        d.pickupAddress.toLowerCase().includes(searchTerm.toLowerCase());
+        (d.foodName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (d.donorOrganizationName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (d.pickupAddress || '').toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchCategory =
         selectedCategory === 'ALL' || d.foodCategory === selectedCategory;
@@ -128,7 +123,7 @@ export const AvailableFoodPage: React.FC = () => {
         return (a.minutesRemaining ?? 999) - (b.minutesRemaining ?? 999);
       }
       if (sortBy === 'QUANTITY') {
-        return Number(b.remainingQuantity) - Number(a.remainingQuantity);
+        return Number(b.remainingQuantity || 0) - Number(a.remainingQuantity || 0);
       }
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
@@ -138,18 +133,14 @@ export const AvailableFoodPage: React.FC = () => {
     { label: 'Rice & Meals', value: 'RICE_AND_MEALS' },
     { label: 'Bread & Bakery', value: 'BREAD_AND_BAKERY' },
     { label: 'Fruits & Veg', value: 'FRUITS_AND_VEGETABLES' },
-    { label: 'Dairy', value: 'DAIRY' },
     { label: 'Packaged Food', value: 'PACKAGED_FOOD' },
     { label: 'Snacks', value: 'SNACKS' },
   ];
 
-  const transportRulePolicy = estimatedDistance <= 15
-    ? { title: 'Donor / Volunteer Transport', desc: 'Distance is ≤ 15 km: Donor or volunteer coordinates dispatch.' }
-    : { title: 'Recipient Arranged Pickup', desc: 'Distance is > 15 km: Recipient arranges pickup or long-haul volunteer.' };
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      
+      <Toast toasts={toasts} onDismiss={(id) => setToasts((prev) => prev.filter((t) => t.id !== id))} />
+
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-lightBorder pb-6">
         <div>
@@ -157,13 +148,13 @@ export const AvailableFoodPage: React.FC = () => {
             Available Surplus Food
           </h1>
           <p className="text-mutedText text-sm mt-1">
-            Real-time surplus food listings ready for recipient claim and redistribution.
+            Real-time surplus food listings ready for recipient claim and redistribution in Erode.
           </p>
         </div>
 
         <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-softGreen text-forest border border-softGreen">
           <Utensils className="w-4 h-4 text-primaryGreen" />
-          <span>{donations.length} Active Listings in MySQL</span>
+          <span>{donations.length} Active Listings</span>
         </div>
       </div>
 
@@ -190,7 +181,7 @@ export const AvailableFoodPage: React.FC = () => {
             </div>
             <select
               value={sortBy}
-              onChange={(e: any) => setSortBy(e.target.value)}
+              onChange={(e) => setSortBy(e.target.value)}
               className="px-3 py-2 rounded-xl border border-lightBorder bg-cream-50 text-darkText text-sm font-medium focus:outline-none focus:ring-2 focus:ring-forest"
             >
               <option value="URGENCY">Urgency (Consume Deadline)</option>
@@ -219,10 +210,9 @@ export const AvailableFoodPage: React.FC = () => {
 
         {/* Sub-filters (Diet, State, Expiring Soon) */}
         <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-lightBorder/60 text-xs">
-          {/* Diet filter */}
           <div className="flex items-center gap-1.5">
             <span className="text-mutedText font-semibold">Diet:</span>
-            {(['ALL', 'VEGETARIAN', 'NON_VEGETARIAN'] as const).map((diet) => (
+            {['ALL', 'VEGETARIAN', 'NON_VEGETARIAN'].map((diet) => (
               <button
                 key={diet}
                 onClick={() => setSelectedDiet(diet)}
@@ -235,10 +225,9 @@ export const AvailableFoodPage: React.FC = () => {
             ))}
           </div>
 
-          {/* State filter */}
           <div className="flex items-center gap-1.5">
             <span className="text-mutedText font-semibold">Type:</span>
-            {(['ALL', 'COOKED', 'PACKAGED'] as const).map((st) => (
+            {['ALL', 'COOKED', 'PACKAGED'].map((st) => (
               <button
                 key={st}
                 onClick={() => setSelectedState(st)}
@@ -251,7 +240,6 @@ export const AvailableFoodPage: React.FC = () => {
             ))}
           </div>
 
-          {/* Expiring Soon Toggle */}
           <label className="flex items-center gap-2 cursor-pointer ml-auto text-darkText font-medium">
             <input
               type="checkbox"
@@ -311,7 +299,6 @@ export const AvailableFoodPage: React.FC = () => {
           title={`Claim Portions: ${selectedDonation.foodName}`}
         >
           <form onSubmit={handleSubmitRequest} className="space-y-5 text-left">
-            {/* Food Info Summary */}
             <div className="p-3.5 rounded-xl bg-cream-50 border border-lightBorder text-xs space-y-1">
               <div className="flex justify-between">
                 <span className="text-mutedText">Donor Kitchen:</span>
@@ -331,7 +318,6 @@ export const AvailableFoodPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Quantity Slider and Input */}
             <div>
               <div className="flex justify-between items-center mb-1.5">
                 <label className="text-xs font-semibold uppercase tracking-wider text-mutedText">
@@ -351,58 +337,29 @@ export const AvailableFoodPage: React.FC = () => {
               />
               <div className="flex justify-between text-[11px] text-mutedText mt-1">
                 <span>1 portion</span>
-                <span>{selectedDonation.remainingQuantity} max</span>
+                <span>{selectedDonation.remainingQuantity} portions</span>
               </div>
             </div>
 
-            {/* Distance Input & 15km Rule Calculation */}
-            <div>
-              <div className="flex justify-between items-center mb-1.5">
-                <label className="text-xs font-semibold uppercase tracking-wider text-mutedText">
-                  Estimated Transport Distance (km)
-                </label>
-                <span className="text-xs font-bold text-darkText">{estimatedDistance} km</span>
-              </div>
-              <input
-                type="number"
-                step="0.5"
-                min="0.5"
-                max="50"
-                value={estimatedDistance}
-                onChange={(e) => setEstimatedDistance(Number(e.target.value))}
-                className="w-full px-3 py-2 rounded-xl border border-lightBorder bg-cream-50 text-sm focus:outline-none focus:ring-2 focus:ring-forest"
-              />
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 flex items-start gap-2">
+              <Truck className="w-4 h-4 text-orangeAccent shrink-0 mt-0.5" />
+              <span>
+                <strong>15 km Transport Rule:</strong> Under 15 km, donor/volunteers deliver. Over 15 km, recipient self-collects.
+              </span>
             </div>
 
-            {/* 15km Transport Rule Evaluator */}
-            <div className={`p-3.5 rounded-xl border text-xs ${
-              estimatedDistance <= 15 ? 'bg-softGreen/30 border-softGreen text-forest' : 'bg-orange-50 border-orange-200 text-orange-950'
-            }`}>
-              <div className="flex items-center gap-1.5 font-bold mb-0.5">
-                <Truck className="w-4 h-4 shrink-0" />
-                <span>15 km Transport Policy: {transportRulePolicy.title}</span>
-              </div>
-              <p className="text-[11px] opacity-90 leading-relaxed">{transportRulePolicy.desc}</p>
-            </div>
-
-            {/* Remaining balance preview */}
-            <p className="text-[11px] text-mutedText text-center">
-              Remaining for other recipients after your claim: <strong>{Number(selectedDonation.remainingQuantity) - requestQuantity} {selectedDonation.quantityUnit}</strong>
-            </p>
-
-            {/* Submit and Cancel Buttons */}
-            <div className="flex gap-3 pt-2">
+            <div className="flex justify-end gap-3 pt-3">
               <button
                 type="button"
                 onClick={() => setSelectedDonation(null)}
-                className="flex-1 py-2.5 rounded-xl border border-lightBorder text-sm font-semibold hover:bg-cream-100 transition-colors"
+                className="px-4 py-2 border border-lightBorder rounded-xl text-xs font-semibold hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submittingRequest}
-                className="flex-1 py-2.5 rounded-xl bg-forest hover:bg-primaryGreen text-white text-sm font-semibold transition-all disabled:opacity-50"
+                className="px-5 py-2 bg-forest hover:bg-primaryGreen text-white text-xs font-bold rounded-xl shadow-sm transition-all disabled:opacity-50"
               >
                 {submittingRequest ? 'Claiming...' : 'Confirm Claim'}
               </button>
@@ -410,10 +367,6 @@ export const AvailableFoodPage: React.FC = () => {
           </form>
         </Modal>
       )}
-
-      {/* Toasts */}
-      <Toast toasts={toasts} onDismiss={(id) => setToasts((prev) => prev.filter((t) => t.id !== id))} />
-
     </div>
   );
 };

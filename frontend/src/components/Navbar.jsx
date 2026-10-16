@@ -2,29 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { notificationsApi } from '../api/client';
-import { NotificationItem } from '../types';
 import { 
   HeartHandshake, 
-  MapPin, 
-  Utensils, 
-  HelpCircle, 
   Bell, 
   LogOut, 
   User as UserIcon, 
   Menu, 
-  X,
-  CheckCircle2,
-  Clock
+  X
 } from 'lucide-react';
 
-export const Navbar: React.FC = () => {
+export const Navbar = () => {
   const { user, isAuthenticated, logout, getDashboardPath } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -41,7 +35,7 @@ export const Navbar: React.FC = () => {
       const list = await notificationsApi.getAll();
       setNotifications(list.slice(0, 5));
     } catch {
-      // ignore in offline mode
+      // ignore when offline
     }
   };
 

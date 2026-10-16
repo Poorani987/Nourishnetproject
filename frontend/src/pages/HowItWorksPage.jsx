@@ -4,17 +4,12 @@ import {
   HeartHandshake, 
   Utensils, 
   Truck, 
-  ShieldCheck, 
   KeyRound, 
-  MapPin, 
   Leaf, 
-  Award, 
-  CheckCircle2,
-  Clock,
-  ArrowRight
+  Clock 
 } from 'lucide-react';
 
-export const HowItWorksPage: React.FC = () => {
+export const HowItWorksPage = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 text-left">
       
@@ -25,16 +20,16 @@ export const HowItWorksPage: React.FC = () => {
           How NourishNet Works
         </h1>
         <p className="text-mutedText text-base leading-relaxed">
-          An autonomous, database-backed platform designed for academic evaluation, connecting food surplus to community hunger through verifiable workflows.
+          An autonomous platform connecting food surplus to community hunger through verifiable workflows and shortest-path road routing.
         </p>
       </div>
 
-      {/* SECTION 1: THE THREE ROLES (NO ADMIN) */}
+      {/* SECTION 1: THE THREE ROLES */}
       <section className="space-y-6">
         <div className="border-b border-lightBorder pb-3">
-          <h2 className="font-serif text-2xl font-bold text-forest">1. Exactly Three User Roles (No Admin)</h2>
+          <h2 className="font-serif text-2xl font-bold text-forest">1. Three Coordinated Roles</h2>
           <p className="text-xs text-mutedText mt-1">
-            System administration and business rules are enforced automatically by backend database constraints.
+            Autonomous peer coordination connecting donors, recipients, and volunteer drivers.
           </p>
         </div>
 
@@ -45,7 +40,7 @@ export const HowItWorksPage: React.FC = () => {
             </div>
             <h3 className="font-serif text-xl font-bold text-forest">Food Donors</h3>
             <p className="text-xs text-mutedText leading-relaxed">
-              Restaurants, hotels, college messes, and banquet caterers. They register FSSAI details and list surplus portions with preparation and consume-before deadlines.
+              Restaurants, hotels, college messes, and banquet caterers. List surplus meals with simple portion counts and freshness deadlines in seconds.
             </p>
           </div>
 
@@ -55,7 +50,7 @@ export const HowItWorksPage: React.FC = () => {
             </div>
             <h3 className="font-serif text-xl font-bold text-forest">Recipients</h3>
             <p className="text-xs text-mutedText leading-relaxed">
-              Shelters, orphanages, old age homes, and charity pantries. They search available meals and submit partial portion claims based on their beneficiary demand.
+              Shelters, orphanages, old age homes, and charity pantries. Browse available meals and claim partial or full portions with an instant verification OTP.
             </p>
           </div>
 
@@ -65,7 +60,7 @@ export const HowItWorksPage: React.FC = () => {
             </div>
             <h3 className="font-serif text-xl font-bold text-forest">Vehicle Volunteers</h3>
             <p className="text-xs text-mutedText leading-relaxed">
-              Unpaid individuals who voluntarily offer personal vehicles (bicycles, bikes, autos, cars, vans). They choose jobs within their vehicle carrying capacity and radius.
+              Civic individuals offering personal vehicles (motorcycle, auto, car, van). Accept delivery runs, follow shortest Dijkstra routes, and verify handovers.
             </p>
           </div>
         </div>
@@ -139,7 +134,6 @@ export const HowItWorksPage: React.FC = () => {
         </div>
 
         <div className="card-warm p-6 space-y-6">
-          {/* Workflow Stepper */}
           <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-forest">
             <span className="px-3 py-1.5 rounded-lg bg-cream-200">PENDING</span>
             <span>→</span>
@@ -194,7 +188,7 @@ export const HowItWorksPage: React.FC = () => {
               <span>Responsible Waste Logging</span>
             </div>
             <p className="text-xs text-mutedText leading-relaxed">
-              Unclaimed or spoiled batches are recorded in `waste_records` with reasons and eco-friendly disposal methods (organic composting, dairy biogas digesters) to maintain complete audit transparency.
+              Unclaimed or spoiled batches are recorded in `waste_records` with reasons and eco-friendly disposal methods (organic composting, biogas digesters) to maintain complete audit transparency.
             </p>
           </div>
         </div>
