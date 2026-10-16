@@ -51,6 +51,10 @@ public class DonationService {
             throw new BadRequestException("Cannot list food that has already passed its consume-before deadline");
         }
 
+        if (Duration.between(LocalDateTime.now(), request.getConsumeBefore()).toMinutes() < 230) {
+            throw new BadRequestException("The food is likely to expire soon so it cannot be donated");
+        }
+
         FoodDonation donation = new FoodDonation();
         donation.setDonorProfile(donor);
         donation.setFoodName(request.getFoodName());
@@ -127,6 +131,14 @@ public class DonationService {
 
         if (donation.getStatus() != DonationStatus.AVAILABLE) {
             throw new BadRequestException("Cannot edit donation with status " + donation.getStatus() + ". Allocations already exist.");
+        }
+
+        if (request.getConsumeBefore().isBefore(request.getPreparationTime())) {
+            throw new BadRequestException("Consume-before deadline must be after preparation time");
+        }
+
+        if (Duration.between(LocalDateTime.now(), request.getConsumeBefore()).toMinutes() < 230) {
+            throw new BadRequestException("The food is likely to expire soon so it cannot be donated");
         }
 
         donation.setFoodName(request.getFoodName());
